@@ -30,6 +30,9 @@ def sanitize_phone_number(phone_number)
   end
 end
 
+def popular_signup_hours(signup_time)
+  signup_time.strptime
+end
 #testing our application is working
 puts "EventManager Initialized!"
 
@@ -43,9 +46,10 @@ contents.each do |row|
   id = row[0]
   name = row[:first_name]
   phone_number = sanitize_phone_number(row[:homephone])
+  signup_time = row[:regdate]
   zipcode = clean_zipcode(row[:zipcode])
   legislators = legislators_by_zipcode(zipcode)
   form_letter = erb_template.result(binding)
   save_thank_you_letters(id, form_letter)
-  puts phone_number
+  puts signup_time
 end

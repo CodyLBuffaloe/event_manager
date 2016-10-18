@@ -22,6 +22,13 @@ def save_thank_you_letters(id, form_letter)
      file.puts form_letter
    end
 end
+# removes all non-Digits from number, cuts the leading 1, and breaks up digits
+# into 3, 3, and 4 groups joining them eventually with a -
+def sanitize_phone_number(phone_number)
+  if phone_number.gsub(/\D/, "").match(/^1?(\d{3})(\d{3})(\d{4})/)
+    phone_number = [$1, $2, $3].join("-")
+  end
+end
 
 #testing our application is working
 puts "EventManager Initialized!"
@@ -35,9 +42,10 @@ erb_template = ERB.new template_letter
 contents.each do |row|
   id = row[0]
   name = row[:first_name]
+  phone_number = sanitize_phone_number(row[:homephone])
   zipcode = clean_zipcode(row[:zipcode])
   legislators = legislators_by_zipcode(zipcode)
   form_letter = erb_template.result(binding)
   save_thank_you_letters(id, form_letter)
-
+  puts phone_number
 end

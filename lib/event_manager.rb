@@ -2,6 +2,7 @@
 require "csv"
 require "sunlight/congress"
 require "erb"
+require "date"
 
 Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
 
@@ -31,7 +32,7 @@ def sanitize_phone_number(phone_number)
 end
 
 def popular_signup_hours(signup_time)
-  signup_time.strptime
+  DateTime.strptime(signup_time, '%m/%d/%y %k:%M').strftime('%k')
 end
 #testing our application is working
 puts "EventManager Initialized!"
@@ -46,7 +47,7 @@ contents.each do |row|
   id = row[0]
   name = row[:first_name]
   phone_number = sanitize_phone_number(row[:homephone])
-  signup_time = row[:regdate]
+  signup_time = popular_signup_hours(row[:regdate])
   zipcode = clean_zipcode(row[:zipcode])
   legislators = legislators_by_zipcode(zipcode)
   form_letter = erb_template.result(binding)
